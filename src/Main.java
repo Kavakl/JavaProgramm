@@ -5,21 +5,11 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args){
-        Product_List a = new Product_List();
-        Product_List b = new Product_List();
-        a.add_product("a",6);
-        a.add_product("b",2);
-        b.add_product("a",6);
-        b.add_product("b",2);
-
-
-        System.out.println(a.equals(b));
-        System.out.println(a.hashCode() == b.hashCode());
-
-        System.out.println(a.list);
-        System.out.println(b.list);
-
-
+        Product_List q = new Product_List();
+        q.add_product("a",2.0);
+        q.add_product("g",2.0);
+        q.remove_product(0);
+        System.out.print(q.list);
     }
 }
 
@@ -27,8 +17,8 @@ public class Main {
 class Product {
     public String Name;
     public int ID;
-    public int price;
-    Product(String a,int b,int c) {
+    public double price;
+    Product(String a,double b,int c) {
         Name = a;
         price = b;
         ID = c;
@@ -37,30 +27,55 @@ class Product {
     public String toString() {
         return Name+" "+price+" "+ID;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+
+        Product product = (Product) o;
+
+        if (ID != product.ID) return false;
+        if (Double.compare(product.price, price) != 0) return false;
+        return Name != null ? Name.equals(product.Name) : product.Name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = Name != null ? Name.hashCode() : 0;
+        result = 31 * result + ID;
+        temp = Double.doubleToLongBits(price);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
 class Product_List {
 
     public ArrayList<Product> list =new ArrayList<Product>();
 
 
-    public void add_product(String a,int b){
+    public void add_product(String a,double b){
         list.add(new Product(a,b,list.size()+1));
     }
     public void remove_product(int c){
-        list.remove(c);
+        if(c>0)
+        list.remove(c-1);
+        else throw new ExceptionInInitializerError();
     }
-    public int search_by_ID(int a){
+    public double search_by_ID(int a){
         for(Product i : list)
             if (i.ID==a)
                 return i.price;
         return -1;
     }
-    public void change_name(int b,String a){
+    public void change_name(double b,String a){
         for(Product i : list)
             if (i.ID==b)
                 i.Name = a;
     }
-    public void change_price(int a,int b){
+    public void change_price(int a,double b){
         for(Product i : list)
             if (i.ID==a)
                 i.price = b;
