@@ -5,27 +5,21 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args){
-        Product_List q = new Product_List();
-        q.add_product("a",2.0);
-        q.add_product("g",2.0);
-        q.remove_product(0);
-        System.out.print(q.list);
     }
 }
 
-
 class Product {
-    public String Name;
-    public int ID;
-    public double price;
+    private String name;
+    private int id;
+    private double price;
     Product(String a,double b,int c) {
-        Name = a;
-        price = b;
-        ID = c;
+        this.setName(a);
+        this.setPrice(b);
+        this.setId(c);
     }
     @Override
     public String toString() {
-        return Name+" "+price+" "+ID;
+        return name+" "+price+" "+id;
     }
 
     @Override
@@ -35,50 +29,85 @@ class Product {
 
         Product product = (Product) o;
 
-        if (ID != product.ID) return false;
+        if (id != product.id) return false;
         if (Double.compare(product.price, price) != 0) return false;
-        return Name != null ? Name.equals(product.Name) : product.Name == null;
+        return name != null ? name.equals(product.name) : product.name == null;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        result = Name != null ? Name.hashCode() : 0;
-        result = 31 * result + ID;
+        result = name != null ? name.hashCode() : 0;
+        result = 31 * result + id;
         temp = Double.doubleToLongBits(price);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        if(name.length()>2)
+            this.name = name;
+        else throw new ExceptionInInitializerError("Incorrect name");
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        if (id>0)
+            this.id = id;
+        else throw new ExceptionInInitializerError("Incorrect id");
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        if (price>0)
+            this.price = price;
+        else throw new ExceptionInInitializerError("Incorrect price");
+    }
 }
+
 class Product_List {
 
     public ArrayList<Product> list =new ArrayList<Product>();
 
-
-    public void add_product(String a,double b){
-        list.add(new Product(a,b,list.size()+1));
+    public void add_product(String a, double b){
+        list.add(new Product(a, b,list.size()+1));
     }
+
     public void remove_product(int c){
         if(c>0)
-        list.remove(c-1);
-        else throw new ExceptionInInitializerError();
+            for(Product i : list) {
+                if (i.getId() == c){
+                    list.remove(i);
+                    break;
+                }
+            }
     }
     public double search_by_ID(int a){
         for(Product i : list)
-            if (i.ID==a)
-                return i.price;
+            if (i.getId() == a)
+                return i.getPrice();
         return -1;
     }
-    public void change_name(double b,String a){
+    public void change_name(int b, String a){
         for(Product i : list)
-            if (i.ID==b)
-                i.Name = a;
+            if (i.getId() == b)
+                i.setName(a);
     }
-    public void change_price(int a,double b){
+    public void change_price(int a, int b){
         for(Product i : list)
-            if (i.ID==a)
-                i.price = b;
+            if (i.getId() == a)
+                i.setPrice(b);
     }
 
     @Override
